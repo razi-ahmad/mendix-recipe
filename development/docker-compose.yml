@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  mendix-recipe:
+    build:
+      context: ..
+      dockerfile: ./Dockerfile
+      target: production
+    labels:
+      container-name: mendix-recipe
+    ports:
+      - "9005:9005"
