@@ -61,7 +61,7 @@ git clone https://github.com/razi-ahmad/mendix-recipe.git
 ### Run application with docker
 
   ```bash
-  docker-compose -p mendix-recipe up -d
+  cd development && docker-compose -p mendix-recipe up -d
   ```
 -----------------------------------------
 ## Run application without docker 
