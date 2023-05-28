@@ -12,18 +12,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mendix.util.Constant.*;
+
 public class IngredientDeserializer extends JsonDeserializer<IngredientDto> {
+
+
+
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
     public IngredientDto deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.readValueAsTree();
-        if (!node.has("ing") || !node.has("title")) {
+        if (!node.has(INGREDIENT_FIELD) || !node.has(TITLE_FIELD)) {
             return buildIngDto(node);
         }
 
-        JsonNode title = node.get("title");
-        ArrayNode ingredients = (ArrayNode) node.get("ing");
+        JsonNode title = node.get(TITLE_FIELD);
+        ArrayNode ingredients = (ArrayNode) node.get(INGREDIENT_FIELD);
         List<IngDto> ingDtoList = new ArrayList<>();
         for (JsonNode ingredient : ingredients) {
             IngDto ingDto = buildIngDto(ingredient);
@@ -33,9 +38,9 @@ public class IngredientDeserializer extends JsonDeserializer<IngredientDto> {
     }
 
     private IngDto buildIngDto(JsonNode ingredient) throws JsonProcessingException {
-        String content = ingredient.get("amt").toString();
+        String content = ingredient.get(AMOUNT_FIELD).toString();
         AmountDto amtDto = OBJECT_MAPPER.readValue(content, AmountDto.class);
-        return IngDto.builder().amt(amtDto).item(ingredient.get("item").asText()).build();
+        return IngDto.builder().amt(amtDto).item(ingredient.get(ITEM_FIELD).asText()).build();
     }
 
 }
