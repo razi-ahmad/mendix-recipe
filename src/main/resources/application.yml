@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    password: test
+    username: test
+    url: jdbc:h2:mem:mendix-recipe
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: path_pattern_parser
+logging:
+  level:
+    root: info
+server:
+  servlet:
+    context-path: /mendix
+  port: 9005
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+logging:
+  level:
+    root: debug
