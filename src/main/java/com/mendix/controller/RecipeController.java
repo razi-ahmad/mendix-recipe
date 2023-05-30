@@ -5,6 +5,7 @@ import com.mendix.dto.RecipemlDto;
 import com.mendix.service.IRecipeService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,16 +30,18 @@ public class RecipeController {
         this.service = service;
     }
 
-    @Operation(summary = "List all recipes")
+    @Operation(summary = "List all recipes or search by attributes")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+            @ApiResponse(responseCode = "500", description = "Internal Server Error if attributes don't match with model qualified path",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = GenericDto.class))})
     })
     @GetMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<RecipemlDto>> getRecipes() {
-        return new ResponseEntity<>(service.list(), HttpStatus.OK);
+    public ResponseEntity<List<RecipemlDto>> getRecipes(
+            @Parameter(name = "filter",example = "head.title.eq=test&head.categories.in=test")
+            @RequestParam(name = "search", required = false) String search) {
+        return new ResponseEntity<>(service.list(search), HttpStatus.OK);
     }
 }

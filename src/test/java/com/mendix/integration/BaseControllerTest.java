@@ -28,6 +28,10 @@ public class BaseControllerTest {
                 objectMapper.getTypeFactory().constructCollectionType(List.class, com.mendix.dto.RecipemlDto.class));
     }
 
+    protected ResultActions performGet(String path) throws Exception {
+        return mockMvc.perform(get(path));
+    }
+
     protected ResultActions performGet(String path, MultiValueMap<String, String> params) throws Exception {
 
         return mockMvc.perform(get(path).params(params));

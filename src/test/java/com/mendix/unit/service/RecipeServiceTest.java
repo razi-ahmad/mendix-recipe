@@ -44,7 +44,7 @@ class RecipeServiceTest {
     @Test
     void test_list_with_IngDto() {
         Mockito.when(repository.findAll()).thenReturn(List.of(RecipeTestData.createRecipe()));
-        List<RecipemlDto> result = underTest.list();
+        List<RecipemlDto> result = underTest.list(null);
 
         Assert.noNullElements(result, "Recipes not found");
         Assertions.assertEquals(result.size(), 1);
@@ -53,7 +53,7 @@ class RecipeServiceTest {
     @Test
     void test_list_with_IngDivDto() {
         Mockito.when(repository.findAll()).thenReturn(List.of(RecipeTestData.createRecipeWithIngDiv()));
-        List<RecipemlDto> result = underTest.list();
+        List<RecipemlDto> result = underTest.list(null);
 
         Assert.noNullElements(result, "Recipes not found");
         Assertions.assertEquals(result.size(), 1);

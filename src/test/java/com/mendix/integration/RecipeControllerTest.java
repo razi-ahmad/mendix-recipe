@@ -6,6 +6,7 @@ import com.mendix.model.IngDiv;
 import com.mendix.model.Recipe;
 import com.mendix.repository.RecipeRepository;
 import com.mendix.util.RecipeTestData;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class RecipeControllerTest extends BaseControllerTest {
         Recipe model = RecipeTestData.createRecipe();
         model.getIngredients().forEach(i -> i.setRecipe(model));
         List<Recipe> models = List.of(model);
-
         repository.saveAll(models);
+
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         MvcResult result = performGet(BASE_PATH, params)
                 .andExpect(status().isOk())
@@ -45,8 +46,8 @@ public class RecipeControllerTest extends BaseControllerTest {
 
         List<RecipemlDto> recipes = getListFromMvcResult(result);
         assertEquals(models.size(), recipes.size());
-        assertEquals(models.get(0).getHead().getTitle(), recipes.get(0).getRecipe().getHead().getTitle());
-        assertEquals(models.get(0).getHead().getCategories().size(), recipes.get(0).getRecipe().getHead().getCat().size());
+        assertEquals(model.getHead().getTitle(), recipes.get(0).getRecipe().getHead().getTitle());
+        assertEquals(model.getHead().getCategories().size(), recipes.get(0).getRecipe().getHead().getCat().size());
         assertEquals(model.getIngredients().size(), recipes.get(0).getRecipe().getIngredients().size());
 
     }
@@ -74,6 +75,55 @@ public class RecipeControllerTest extends BaseControllerTest {
         IngDiv ingDivModel = (IngDiv) model.getIngredients().get(0);
         IngDivDto ingDivDto = (IngDivDto) recipes.get(0).getRecipe().getIngredients().get(0);
         assertEquals(ingDivModel.getIng().size(), ingDivDto.getIng().size());
+    }
 
+    @Test
+    public void test_search_recipe_by_criteria_title_successfully() throws Exception {
+        Recipe model = RecipeTestData.createRecipe();
+        model.getIngredients().forEach(i -> i.setRecipe(model));
+        List<Recipe> models = List.of(model);
+        repository.saveAll(models);
+
+        String searchCriteria = "head.title.eq=test title";
+
+
+        MvcResult result = performGet(BASE_PATH + "?search=" + searchCriteria)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<Recipe> optionalRecipe = repository.findAll();
+
+
+        List<RecipemlDto> listRecipeList = getListFromMvcResult(result);
+        Assertions.assertEquals(optionalRecipe.size(), listRecipeList.size());
+
+    }
+
+    @Test
+    public void test_search_recipe_by_criteria_category_successfully() throws Exception {
+        Recipe model = RecipeTestData.createRecipe();
+        model.getIngredients().forEach(i -> i.setRecipe(model));
+        List<Recipe> models = List.of(model);
+        repository.saveAll(models);
+
+        String searchCriteria = "head.categories.in=test1";
+
+
+        MvcResult result = performGet(BASE_PATH + "?search=" + searchCriteria)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<Recipe> optionalRecipe = repository.findAll();
+
+
+        List<RecipemlDto> listRecipeList = getListFromMvcResult(result);
+        Assertions.assertEquals(optionalRecipe.size(), listRecipeList.size());
+    }
+
+    @Test
+    public void test_search_recipe_by_criteria_fails() throws Exception {
+        performGet(BASE_PATH + "/search=null")
+                .andExpect(status().is4xxClientError())
+                .andReturn();
     }
 }

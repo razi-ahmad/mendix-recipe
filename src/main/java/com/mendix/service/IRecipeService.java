@@ -8,5 +8,5 @@ public interface IRecipeService {
 
     void save(RecipemlDto recipemlDto);
 
-    List<RecipemlDto> list();
+    List<RecipemlDto> list(String category);
 }
