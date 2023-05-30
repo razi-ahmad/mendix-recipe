@@ -4,10 +4,14 @@ import com.mendix.dto.RecipemlDto;
 import com.mendix.model.IngDiv;
 import com.mendix.model.Recipe;
 import com.mendix.repository.RecipeRepository;
+import com.mendix.util.RecipeDtoMapper;
 import com.mendix.util.RecipeModelMapper;
 import jakarta.transaction.TransactionScoped;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService implements IRecipeService {
@@ -31,5 +35,13 @@ public class RecipeService implements IRecipeService {
             }
         });
         repository.save(recipe);
+    }
+
+    @Override
+    public List<RecipemlDto> list() {
+            return repository
+                    .findAll()
+                    .stream().map(RecipeDtoMapper::map)
+                    .collect(Collectors.toList());
     }
 }
