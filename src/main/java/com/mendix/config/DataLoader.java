@@ -1,6 +1,7 @@
 package com.mendix.config;
 
 import com.mendix.dto.RecipemlDto;
+import com.mendix.service.IRecipeService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -27,11 +28,13 @@ public class DataLoader implements ApplicationRunner {
     public static final String DIRECTORY = "recipes";
 
     private final ResourceLoader resourceLoader;
+    private final IRecipeService recipeService;
 
     @Autowired
-    public DataLoader(ResourceLoader resourceLoader) {
+    public DataLoader(ResourceLoader resourceLoader,
+                      IRecipeService recipeService) {
         this.resourceLoader = resourceLoader;
-
+        this.recipeService = recipeService;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class DataLoader implements ApplicationRunner {
     }
 
     public Optional<RecipemlDto> loadData(String fileName) {
-        if(Objects.isNull(fileName)) return Optional.empty();
+        if (Objects.isNull(fileName)) return Optional.empty();
 
         try (InputStream is = getClass().getResourceAsStream(fileName)) {
             if (Objects.isNull(is)) {
@@ -65,7 +68,7 @@ public class DataLoader implements ApplicationRunner {
     }
 
     private void storeData(RecipemlDto recipe) {
-        log.info(recipe.toString());
+        recipeService.save(recipe);
     }
 
     private static Object xmlToObject(Reader reader) {
