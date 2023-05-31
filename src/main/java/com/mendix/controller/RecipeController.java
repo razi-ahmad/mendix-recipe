@@ -50,7 +50,7 @@ public class RecipeController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<RecipemlDto>> getRecipes(
-            @Parameter(name = "filter",example = "head.title.eq=test&head.categories.in=test")
+            @Parameter(name = "search",example = "head.title.eq=test&head.categories.in=test")
             @RequestParam(name = "search", required = false) String search) {
         return new ResponseEntity<>(service.list(search), HttpStatus.OK);
     }
