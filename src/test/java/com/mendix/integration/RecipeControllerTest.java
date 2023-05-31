@@ -133,7 +133,7 @@ public class RecipeControllerTest extends BaseControllerTest {
 
     @Test
     public void test_search_recipe_by_criteria_fails() throws Exception {
-        performGet(BASE_PATH + "/search=null")
+        performGet(BASE_PATH + "/search")
                 .andExpect(status().is4xxClientError())
                 .andReturn();
     }
