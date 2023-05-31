@@ -5,6 +5,7 @@ import com.mendix.dto.RecipemlDto;
 import com.mendix.model.IngDiv;
 import com.mendix.model.Recipe;
 import com.mendix.repository.RecipeRepository;
+import com.mendix.util.RecipeDtoTestData;
 import com.mendix.util.RecipeTestData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RecipeControllerTest extends BaseControllerTest {
@@ -31,6 +33,15 @@ public class RecipeControllerTest extends BaseControllerTest {
         repository.deleteAll();
     }
 
+    @Test
+    public void test_create_recipe_successfully() throws Exception {
+        RecipemlDto request = RecipeDtoTestData.createRecipeWithIng();
+        performPost(BASE_PATH, request)
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        assertFalse(repository.findAll().isEmpty());
+    }
 
     @Test
     public void test_list_recipes_with_ing_successfully() throws Exception {
