@@ -1,5 +1,6 @@
 package com.mendix.unit.service;
 
+import com.mendix.dto.CategoryDto;
 import com.mendix.dto.RecipemlDto;
 import com.mendix.exception.DuplicateRecipeException;
 import com.mendix.model.Recipe;
@@ -59,6 +60,16 @@ class RecipeServiceTest {
         Assertions.assertThrows(DuplicateRecipeException.class, () -> underTest.save(request));
 
         Mockito.verify(repository, Mockito.times(0)).save(ArgumentMatchers.any(Recipe.class));
+    }
+
+    @Test
+    void test_getCategories() {
+        Mockito.when(headRepository.findAll()).thenReturn(List.of(RecipeTestData.buildHead()));
+        List<CategoryDto> result = underTest.getCategories();
+
+        Assert.noNullElements(result, "Categories are empty");
+        Assert.hasText(result.get(0).getCategory(), "test1");
+        Assert.hasText(result.get(1).getCategory(), "test2");
     }
 
     @Test

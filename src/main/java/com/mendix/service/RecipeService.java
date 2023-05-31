@@ -1,5 +1,6 @@
 package com.mendix.service;
 
+import com.mendix.dto.CategoryDto;
 import com.mendix.dto.RecipemlDto;
 import com.mendix.exception.DuplicateRecipeException;
 import com.mendix.exception.NotFoundException;
@@ -59,6 +60,17 @@ public class RecipeService implements IRecipeService {
     private void validateDuplicate(String title) {
         if (headRepository.exists(Example.of(Head.builder().title(title).build())))
             throw new DuplicateRecipeException("Already recipe exist with title:" + title);
+    }
+
+    @Override
+    public List<CategoryDto> getCategories() {
+        return headRepository.findAll()
+                .stream()
+                .map(Head::getCategories)
+                .flatMap(List::stream)
+                .distinct()
+                .map(c-> CategoryDto.builder().category(c).build())
+                .collect(Collectors.toList());
     }
 
     @Override

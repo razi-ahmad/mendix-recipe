@@ -137,4 +137,20 @@ public class RecipeControllerTest extends BaseControllerTest {
                 .andExpect(status().is4xxClientError())
                 .andReturn();
     }
+
+    @Test
+    void test_get_categories() throws Exception {
+        Recipe model = RecipeTestData.createRecipe();
+        model.getIngredients().forEach(i -> i.setRecipe(model));
+        List<Recipe> models = List.of(model);
+        repository.saveAll(models);
+
+        MvcResult result = performGet(BASE_PATH + "/heads/categories" )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<String> categories = getListFromMvcResult(result);
+        Assertions.assertEquals(categories.size(), model.getHead().getCategories().size());
+
+    }
 }

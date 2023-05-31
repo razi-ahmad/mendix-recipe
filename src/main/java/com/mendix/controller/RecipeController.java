@@ -1,5 +1,6 @@
 package com.mendix.controller;
 
+import com.mendix.dto.CategoryDto;
 import com.mendix.dto.GenericDto;
 import com.mendix.dto.RecipemlDto;
 import com.mendix.service.IRecipeService;
@@ -52,5 +53,12 @@ public class RecipeController {
             @Parameter(name = "filter",example = "head.title.eq=test&head.categories.in=test")
             @RequestParam(name = "search", required = false) String search) {
         return new ResponseEntity<>(service.list(search), HttpStatus.OK);
+    }
+
+    @GetMapping("/heads/categories")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<CategoryDto>> getCategories() {
+        return new ResponseEntity<>(service.getCategories(), HttpStatus.OK);
     }
 }
